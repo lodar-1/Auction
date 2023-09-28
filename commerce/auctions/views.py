@@ -3,8 +3,8 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User
+from datetime import datetime
+from .models import User, Category, Listing, ListingBid
 
 
 def index(request):
@@ -61,3 +61,20 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+        
+def newlisting(request, formtype="list"):
+	if request.method == "POST":
+		print('Add Listing')
+		print(request.POST['category'])
+		categoryid = int(request.POST["category"])
+		category = Category.objects.get(id=categoryid)
+		print (f"category: {category.category_name}")
+		listing = Listing.objects.create(user_id=request.user, title=request.POST["title"], description=request.POST["description"], 
+		category_id=category, image_link=request.POST["imageurl"], listing_date=datetime.now(), active=True)
+		
+		return HttpResponseRedirect(reverse("index"))
+		#pass
+	else:
+		categories = Category.objects.all()
+		formlabel = "Create"
+		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel})	
