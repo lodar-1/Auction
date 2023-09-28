@@ -6,12 +6,11 @@ class User(AbstractUser):
     pass
 
 class Category(models.Model):
-	caegory_name = models.CharField(max_length=64)
+	category_name = models.CharField(max_length=64)
 	category_description = models.CharField(max_length=500)
 	
 	def __str__(self):
-		return category_name
-
+		return self.category_name
 		
 class Listing(models.Model):
 	title = models.CharField(max_length=64)
@@ -28,7 +27,7 @@ class ListingBid(models.Model):
 	user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="UserBid")
 	
 	def __str__(self):
-		return f"{userid} {bid_amount} {bid_datetime}"
+		return f"{self.userid} {self.bid_amount} {self.bid_datetime}"
 		
 class Comment(models.Model):
 	comment = models.CharField(max_length=500)
@@ -36,7 +35,7 @@ class Comment(models.Model):
 	listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="ListingComments")
 	
 	def __str__(self):
-		return f"{comment} {comment_datetime}"
+		return f"{self.comment} {self.comment_datetime}"
 
 class Watchlist(models.Model):
 	user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="UserWatchlist")
