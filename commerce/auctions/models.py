@@ -18,6 +18,8 @@ class Listing(models.Model):
 	image_link = models.CharField(max_length=64)
 	listing_date = models.DateTimeField()
 	active = models.BooleanField(default=False)
+	allowedit = models.BooleanField(default=True)
+	startbid = models.FloatField(default=0)
 	user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="UserListings")
 	category_id = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="ListingCategory")
 	

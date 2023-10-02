@@ -8,8 +8,13 @@ from .models import User, Category, Listing, ListingBid
 
 
 def index(request):
-    return render(request, "auctions/index.html")
-
+	if request.user.is_authenticated:
+		#print(request.user)
+		userlistings = Listing.objects.filter(user_id=request.user, active=True)
+		print(userlistings)
+		return render(request, "auctions/index.html", {"listings": userlistings})
+	else:
+		return render(request, "auctions/login.html", {"message": "Login required."})
 
 def login_view(request):
     if request.method == "POST":
@@ -62,19 +67,38 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
         
-def newlisting(request, formtype="list"):
+def newlisting(request, formtype, listingid=None):
+	print(formtype)
 	if request.method == "POST":
-		print('Add Listing')
-		print(request.POST['category'])
-		categoryid = int(request.POST["category"])
-		category = Category.objects.get(id=categoryid)
-		print (f"category: {category.category_name}")
-		listing = Listing.objects.create(user_id=request.user, title=request.POST["title"], description=request.POST["description"], 
-		category_id=category, image_link=request.POST["imageurl"], listing_date=datetime.now(), active=True)
-		
-		return HttpResponseRedirect(reverse("index"))
-		#pass
-	else:
+		if formtype=="add":
+			categoryid = int(request.POST["category"])
+			category = Category.objects.get(id=categoryid)
+			listing = Listing.objects.create(user_id=request.user, title=request.POST["title"], description=request.POST["description"], 
+			category_id=category, image_link=request.POST["imageurl"], listing_date=datetime.now(), active=True)
+			return HttpResponseRedirect(reverse("index"))
+		if formtype=="edit":
+			print(listingid)
+			listing = Listing.objects.get(id=int(request.POST["listingid"]))
+			categoryid = int(request.POST["category"])
+			listing.category = Category.objects.get(id=categoryid)
+			listing.user_id=request.user
+			listing.title = request.POST["title"]
+			listing.description=request.POST["description"]
+			listing.image_link=request.POST["imageurl"] 
+			listing.active=True
+			listing.save()
+			return HttpResponseRedirect(reverse("index"))
+				
+	elif formtype=="edit":
+		categories = Category.objects.all()
+		formlabel = "View"
+		listing = Listing.objects.get(id=listingid)
+		print(listing.description)
+		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "scontent": listing.description, 
+		"title": listing.title, "selectedcategory": listing.category_id, "image": listing.image_link, "formtype": formtype, "listingid":listingid})	
+	else:	
 		categories = Category.objects.all()
 		formlabel = "Create"
-		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel})	
+		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "formtype": formtype})	
+
+	

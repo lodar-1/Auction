@@ -2,6 +2,12 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
+		<ul>
+		{% for listing in listings %}
+			<li><a href="{% url 'listing' formtype='edit' listingid=listing.id %}">#{{listing.id}}</a> {{listing.title}}</li>
+		{% empty %}
+			<li>No lisings.</li>
+		{% endfor %}
+	</ul>
     TODO
 {% endblock %}

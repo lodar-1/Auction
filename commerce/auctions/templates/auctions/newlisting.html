@@ -2,20 +2,25 @@
 
 {% block body %}
     <h2>{{ formlabel }} Listing</h2>
-	<form action="{%url 'newlisting' 'add' %}" method="post">
+	<form action="{%url 'newlisting' formtype %}" method="post">
 		{% csrf_token %}
 		<div class="form-flex-container">
 			<div class="form-grid-container">
-				<div class="item1"><input type="text" label="Title" name="title" placeholder="Title" size ="50" required></div>
+				<div class="item1"><input type="text" label="Title" name="title" placeholder="Title" size ="50" required value='{{ title }}'></div>
 				<!-- <div class ="item4">{{ error }}</div> -->
 				<div class="item2"><textarea name="description" style="rows: 5" placeholder="Description" required>{{ scontent }}</textarea></div>
-				<div class="item3"><input type="text" label="Image" name="imageurl" placeholder="Image URL"></div>
+				<div class="item3"><input type="text" label="Image" name="imageurl" placeholder="Image URL" value='{{ image }}'></div>
 				<select class="item4" name="category" id="">
 					{% for category in categories %}
-						<option value="{{ category.id }}">{{ category.category_name }}</option>
+						{%if selectedcategory.id == category.id%}
+							<option value="{{ category.id }}" selected>{{ category.category_name }}</option>
+						{%else%}
+							<option value="{{ category.id }}">{{ category.category_name }}</option>
+						{%endif%}	
 					{% endfor %}
-				</select>				
-				<div class="item5"><input type="submit" class="submit" value="Save"></div>
+				</select>	
+				<input type=hidden name='listingid' value='{{ listingid }}'>			
+				<div class="item5"><input type=button onclick="history.back();" value="Back"> <input type="submit" class="submit" value="Save"></div>
 			</div>	
 		</div>		
 		
