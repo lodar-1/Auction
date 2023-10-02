@@ -74,7 +74,7 @@ def newlisting(request, formtype, listingid=None):
 			categoryid = int(request.POST["category"])
 			category = Category.objects.get(id=categoryid)
 			listing = Listing.objects.create(user_id=request.user, title=request.POST["title"], description=request.POST["description"], 
-			category_id=category, image_link=request.POST["imageurl"], listing_date=datetime.now(), active=True)
+			category_id=category, image_link=request.POST["imageurl"], listing_date=datetime.now(), active=True, startbid=float(request.POST["startbid"]))
 			return HttpResponseRedirect(reverse("index"))
 		if formtype=="edit":
 			print(listingid)
@@ -86,6 +86,7 @@ def newlisting(request, formtype, listingid=None):
 			listing.description=request.POST["description"]
 			listing.image_link=request.POST["imageurl"] 
 			listing.active=True
+			listing.startbid = startbid=float(request.POST["startbid"])
 			listing.save()
 			return HttpResponseRedirect(reverse("index"))
 				
@@ -95,7 +96,7 @@ def newlisting(request, formtype, listingid=None):
 		listing = Listing.objects.get(id=listingid)
 		print(listing.description)
 		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "scontent": listing.description, 
-		"title": listing.title, "selectedcategory": listing.category_id, "image": listing.image_link, "formtype": formtype, "listingid":listingid})	
+		"title": listing.title, "selectedcategory": listing.category_id, "image": listing.image_link, "formtype": formtype, "listingid":listingid, "startbid":listing.startbid})	
 	else:	
 		categories = Category.objects.all()
 		formlabel = "Create"
