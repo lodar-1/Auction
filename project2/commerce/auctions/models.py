@@ -23,7 +23,7 @@ class Listing(models.Model):
 	user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="UserListings")
 	category_id = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="ListingCategory")
 	def __str__(self):
-		return f"{title} {self.user_id} {self.listing_date}"
+		return f"{self.title} {self.user_id} {self.listing_date}"
 		
 class ListingBid(models.Model):
 	bid_amount = models.IntegerField() 
