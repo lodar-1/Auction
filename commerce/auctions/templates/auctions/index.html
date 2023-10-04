@@ -2,12 +2,26 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-		<ul>
+<!--	<div class="flex-container">-->
+
+	<ul style="list-style-type:none"> 
 		{% for listing in listings %}
-			<li><a href="{% url 'listing' formtype='edit' listingid=listing.id %}">#{{listing.id}}</a> {{listing.title}}</li>
+
+			<li class="list"> 
+				<div class="grid-container">
+					<div class="grid-item item1" style="text-align: right"><a href="{% url 'viewlisting' listingid=listing.id %}"><image class="activeimage" src='{{listing.image_link}}'></image></a></div>
+					<div class="grid-item item2"><h2>{{ listing.title }}</h2></div>
+					<div class="grid-item item3" ><label id="lblprice">Current Bid: </label> ${{ listing.startbid|floatformat:2 }}</div>
+					<div class="grid-item item4">{{ listing.description }}</div>
+					<div class="grid-item item5">Created: {{ listing.listing_date }}</div>
+					<hr>
+				</div>
+			</li>
+			<hr>
 		{% empty %}
-			<li>No lisings.</li>
+			No lisings
 		{% endfor %}
 	</ul>
-    TODO
+		
+	<!--</div>		-->
 {% endblock %}

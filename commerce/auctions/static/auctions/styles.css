@@ -1,3 +1,141 @@
 body {
+    margin: 0;
     padding: 10px;
+    font-size: 0.875rem;
+    font-family: Arial,sans-serif;
+}
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  align-items: left;
+}
+
+.flex-container > div {
+  margin: 5px;
+  padding: 0px;
+  height: 200px;
+  flex-direction: column;
+  flex-wrap: wrap;  
+  text-align: left;
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: 230px auto;	
+	gap: 10px;
+	padding: 10px;
+	border: 2px;
+}
+.grid-item {
+  text-align: left;
+  padding: 20px;
+  font-size: 30px;
+}
+
+.item1 { /*grid-area: image flex:100%*/ grid-column:1; grid-row: 1/span 5;}
+.item2 { /*grid-area: title*/ grid-column:2; font-size: medium;}
+.item3 { /*grid-area: price*/ grid-column:2; font-size: medium;}
+.item4 { /*grid-area: description*/ grid-column:2; font-size: medium;}
+.item5 { /*grid-area: created*/ grid-column:2; font-size: small;}
+
+.viewitem1 { /*grid-area: image flex:100%*/ grid-column:2;}
+.viewitem2 { /*grid-area: title*/ grid-column:2; font-size: medium;}
+.viewitem3 { /*grid-area: price*/ grid-column:2; font-size: medium;}
+.viewitem4 { /*grid-area: description*/ grid-column:2; font-size: medium;}
+.viewitem5 { /*grid-area: created*/ grid-column:2; font-size: small;}
+.viewitem6 { /*grid-area: created*/ grid-column:2; font-size: small;}
+
+
+
+h1 {
+    margin-top: 0px;
+    padding-top: 20px;
+}
+
+.activeimage {
+	width:100%;
+    max-width:200px;
+    max-height: 250px;
+}
+textarea {
+    height: 20vh;
+    width: 40%;
+}
+a img {
+    border: none;
+}
+
+a.section:link, a.section:visited {
+    color: var(--header-link-color);
+    text-decoration: none;
+}
+
+a.section:focus, a.section:hover {
+    text-decoration: underline;
+}
+p, ol, ul, dl {
+    margin: .2em 0 .8em 0;
+}
+
+p {
+    padding: 0;
+    line-height: 140%;
+}
+
+h1,h2,h3,h4,h5 {
+    font-weight: bold;
+}
+
+h1 {
+    margin: 0 0 20px;
+    font-weight: 300;
+    font-size: 1.25rem;
+}
+
+h2 {
+    font-size: 1rem;
+    margin: 1em 0 .5em 0;
+}
+
+h2.subhead {
+    font-weight: normal;
+    margin-top: 0;
+}
+
+h3 {
+    font-size: 0.875rem;
+    margin: .8em 0 .3em 0;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 0.75rem;
+    margin: 1em 0 .8em 0;
+    padding-bottom: 3px;
+}
+
+h5 {
+    font-size: 0.625rem;
+    margin: 1.5em 0 .5em 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.list {
+
+    padding: 2px;
+    margin: 0px;
+}
+form {
+    margin: 0;
+    padding: 0;
+}    
+hr.solid {
+	border: 0;
+	border-top: 1px solid #eee;
+}
+#lblprice {
+	font-size: 1rem;
+	font-weight: bold;
 }
