@@ -4,15 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from datetime import datetime
-from .models import User, Category, Listing, ListingBid
-
+from .models import User, Category, Listing, ListingBid, Comment
+from django.contrib.auth.decorators import login_required
 
 def index(request):
 	if request.user.is_authenticated:
 		#print(request.user)
-		userlistings = Listing.objects.filter(user_id=request.user, active=True)
-		print(userlistings)
-		return render(request, "auctions/index.html", {"listings": userlistings})
+		listings = Listing.objects.filter(active=True)
+		#print(userlistings)
+		return render(request, "auctions/index.html", {"listings": listings})
 	else:
 		return render(request, "auctions/login.html", {"message": "Login required."})
 
@@ -92,7 +92,7 @@ def newlisting(request, formtype, listingid=None):
 				
 	elif formtype=="edit":
 		categories = Category.objects.all()
-		formlabel = "View"
+		formlabel = "Edit"
 		listing = Listing.objects.get(id=listingid)
 		print(listing.description)
 		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "scontent": listing.description, 
@@ -102,4 +102,36 @@ def newlisting(request, formtype, listingid=None):
 		formlabel = "Create"
 		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "formtype": formtype})	
 
+def viewlisting(request, listingid):
+	print('yevo')
+	listing = Listing.objects.get(id=listingid)
+	listingbids = ListingBid.objects.filter(listing = listing)
+	lastbid = listingbids.last().bid_amount
+	bidcount = listingbids.count()
+	print(type(listingbids))
+	comments = Comment.objects.filter(listing_id = listing)
+	listinguser = Listing.user_id
+	#return render(request, "auctions/viewlisting.html", { "categories": categories, "formlabel": formlabel, "scontent": listing.description, 
+	#"title": listing.title, "selectedcategory": listing.category_id, "image": listing.image_link, "formtype": formtype, "listingid":listingid, "startbid":listing.startbid,
+	#"comments":comments, "listinguser":listinguser})	
+	return render(request, "auctions/viewlisting.html", {"listing": listing, "listingbids": lastbid, "comments":comments, "bidscount":bidcount})
+	
+@login_required
+def bid(request, listingid):
+	if request.method == "POST":	
+		listing = Listing.objects.get(id=listingid)
+		listbid = ListingBid.objects.create(bid_amount=request.POST["txtBid"], bid_datetime=datetime.now(), listing_id = listingid, user_id=request.user)
+		return viewlisting(request, listingid) 
+	else:
+		return viewlisting(request, listingid) 
+		
+@login_required
+def comment(request, listingid):
+	if request.method == "POST":	
+		listing = Listing.objects.get(id=listingid)
+		Comment.objects.create(comment=request.POST["comment"], comment_datetime = datetime.now(), listing_id = listing)
+		return viewlisting(request, listingid) 
+	else:
+		return viewlisting(request, listingid) 
+		
 	

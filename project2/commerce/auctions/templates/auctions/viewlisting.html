@@ -1,0 +1,43 @@
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ formlabel }} Listing</h2>
+	<form action="{%url 'bid' listingid=listing.id%}" method="post" id="form1">
+		{% csrf_token %}
+		<ul style="list-style-type:none"> 
+				<li class="list"> 
+					<div class="grid-container">
+						<div class="grid-item viewitem1" style="text-align: left"><a ><image class="activeimage" src='{{listing.image_link}}'></image></a></div>
+						<div class="grid-item viewitem2"><h2>{{ listing.title }}</h2></div>
+						<div class="grid-item viewitem3" >
+							{% if bidscount > 0 %}
+								<label id="lblprice">Current Bid: </label> $ {{ listingbids }} ({{bidscount}} total bid/s)
+							{% else %}
+								<label id="lblprice">Current Bid: </label> $ {{ listing.startbid|floatformat:2 }}
+							{% endif %}	
+						</div>
+						<div class="grid-item viewitem4">{{ listing.description }}</div>
+						<div class="grid-item viewitem5">Created: {{ listing.listing_date }}</div>
+						<div class="grid-item viewitem6"><input type="text" name="txtBid" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+					</div>
+				</li>
+		</ul>
+		<input type=hidden name='listingid' value='{{ listingid }}'>			
+	</form>
+	<div class="grid-container">
+		<div class="grid-item viewitem4">
+			<form action="{%url 'comment' listingid=listing.id %}" method="post" id="form2">
+				{% csrf_token %}
+				{% for comment in comments %}
+					{{comment.comment}}<br/>
+					<hr>
+				{% endfor %}
+				<textarea name="comment" style="rows: 5" placeholder="Comment..." required></textarea>
+				<div class="item5"><input type=button onclick="history.back();" value="Back"> <input type="submit" class="submit" value="Post" form="form2"></div>
+				<input type=hidden name='listingid' value='{{ listingid }}'>			
+			</form>
+		</div>
+			
+	</div>
+{% endblock %}
