@@ -6,12 +6,23 @@ from django.urls import reverse
 from datetime import datetime
 from .models import User, Category, Listing, ListingBid, Comment
 from django.contrib.auth.decorators import login_required
+from django.db import connection
+
+
+def dictfetchall(cursor):
+    """
+    Return all rows from a cursor as a dict.
+    Assume the column names are unique.
+    """
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 def index(request):
 	if request.user.is_authenticated:
-		#print(request.user)
-		listings = Listing.objects.filter(active=True)
-		#print(userlistings)
+		cursor = connection.cursor()
+#		cursor.execute("select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, b.bid_amount 'bid_amount', b.bid_count 'bid_count' from auctions_listing l left join (select listing_id, max(bid_amount) 'bid_amount', count(listing_id) 'bid_count' from auctions_listingbid group by listing_id) b on l.id = b.listing_id;")
+		cursor.execute("select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count' from auctions_listing l left join auctions_listingbid b on l.id = b.listing_id group by l.id,b.listing_id;")		
+		listings = dictfetchall(cursor)  #Listing.objects.raw("select l.id 'id', l.title 'title', l.image_link, l.startbid, b.bid_amount 'bid_amount', b.bid_count 'bid_count' from auctions_listing l left join (select listing_id, max(bid_amount) 'bid_amount', count(listing_id) 'bid_count' from auctions_listingbid group by listing_id) b on l.id = b.listing_id;")
 		return render(request, "auctions/index.html", {"listings": listings})
 	else:
 		return render(request, "auctions/login.html", {"message": "Login required."})
@@ -103,18 +114,21 @@ def newlisting(request, formtype, listingid=None):
 		return render(request, "auctions/newlisting.html", { "categories": categories, "formlabel": formlabel, "formtype": formtype})	
 
 def viewlisting(request, listingid):
-	print('yevo')
 	listing = Listing.objects.get(id=listingid)
 	listingbids = ListingBid.objects.filter(listing = listing)
-	lastbid = listingbids.last().bid_amount
 	bidcount = listingbids.count()
-	print(type(listingbids))
+	if(bidcount > 0):
+		lastbid = listingbids.last().bid_amount
+		lastbiduser = listingbids.last().user_id
+	else:
+		lastbid = 0
+		lastbiduser = ""
 	comments = Comment.objects.filter(listing_id = listing)
 	listinguser = Listing.user_id
 	#return render(request, "auctions/viewlisting.html", { "categories": categories, "formlabel": formlabel, "scontent": listing.description, 
 	#"title": listing.title, "selectedcategory": listing.category_id, "image": listing.image_link, "formtype": formtype, "listingid":listingid, "startbid":listing.startbid,
 	#"comments":comments, "listinguser":listinguser})	
-	return render(request, "auctions/viewlisting.html", {"listing": listing, "listingbids": lastbid, "comments":comments, "bidscount":bidcount})
+	return render(request, "auctions/viewlisting.html", {"listing": listing, "listingbids": lastbid, "comments":comments, "bidscount":bidcount, "lastbiduser":lastbiduser})
 	
 @login_required
 def bid(request, listingid):
@@ -129,7 +143,7 @@ def bid(request, listingid):
 def comment(request, listingid):
 	if request.method == "POST":	
 		listing = Listing.objects.get(id=listingid)
-		Comment.objects.create(comment=request.POST["comment"], comment_datetime = datetime.now(), listing_id = listing)
+		Comment.objects.create(comment=request.POST["comment"], comment_datetime = datetime.now(), listing_id = listing, user_id = request.user)
 		return viewlisting(request, listingid) 
 	else:
 		return viewlisting(request, listingid) 
