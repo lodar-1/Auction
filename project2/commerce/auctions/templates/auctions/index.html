@@ -3,7 +3,6 @@
 {% block body %}
     <h2>Active Listings</h2>
 <!--	<div class="flex-container">-->
-
 	<ul style="list-style-type:none"> 
 		{% for listing in listings %}
 
@@ -11,7 +10,13 @@
 				<div class="grid-container">
 					<div class="grid-item item1" style="text-align: right"><a href="{% url 'viewlisting' listingid=listing.id %}"><image class="activeimage" src='{{listing.image_link}}'></image></a></div>
 					<div class="grid-item item2"><h2>{{ listing.title }}</h2></div>
-					<div class="grid-item item3" ><label id="lblprice">Current Bid: </label> ${{ listing.startbid|floatformat:2 }}</div>
+					<div class="grid-item item3">	{% if listing.bid_amount > 0 %}
+						<label id="lblprice">Current Bid: </label> $ {{ listing.bid_amount|floatformat:2 }} 
+						{% else %}
+						<label id="lblprice">Current Bid: </label> $ {{ listing.startbid|floatformat:2 }} 
+						{%endif %}	
+					</div>	
+<!--					<div class="grid-item item3" ><label id="lblprice">Current Bid: </label> ${{ listingbid|floatformat:2 }}</div> -->
 					<div class="grid-item item4">{{ listing.description }}</div>
 					<div class="grid-item item5">Created: {{ listing.listing_date }}</div>
 					<hr>
