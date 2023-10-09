@@ -4,26 +4,47 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from datetime import datetime
-from .models import User, Category, Listing, ListingBid, Comment
+from .models import User, Category, Listing, ListingBid, Comment, Watchlist
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 
 
 def dictfetchall(cursor):
-    """
-    Return all rows from a cursor as a dict.
-    Assume the column names are unique.
-    """
+
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-def index(request):
+def index(request, viewtype='active'):
+	title = ""
 	if request.user.is_authenticated:
 		cursor = connection.cursor()
-#		cursor.execute("select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, b.bid_amount 'bid_amount', b.bid_count 'bid_count' from auctions_listing l left join (select listing_id, max(bid_amount) 'bid_amount', count(listing_id) 'bid_count' from auctions_listingbid group by listing_id) b on l.id = b.listing_id;")
-		cursor.execute("select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count' from auctions_listing l left join auctions_listingbid b on l.id = b.listing_id group by l.id,b.listing_id;")		
+		# convert to int first to prevent any possible userid spoofing sql injection
+		userid = str(int(request.user.id))
+	#	sSQL = """select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count' 
+	#			from auctions_listing l 
+	#			left join auctions_listingbid b on l.id = b.listing_id 
+	#			group by l.id,b.listing_id;"""
+		if viewtype=='active':
+			sSQL = f"""select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count', case when w.id is not null then 'true' else 'false' end 'watchlist' 
+						from auctions_listing l 
+						left join auctions_listingbid b on l.id = b.listing_id
+						left join auctions_watchlist w on w.listing_id_id  = l.id and w.user_id_id = {userid}
+						group by l.id,b.listing_id, w.id;"""
+			title = "Active Listings"
+			cursor.execute(sSQL)		
+		else: 
+			title = "Watchlist"
+
+			sSQL = (f"""select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count' 
+					from auctions_listing l 
+					left join auctions_listingbid b on l.id = b.listing_id 
+					inner join auctions_Watchlist w on w.listing_id_id = l.id 
+					where w.user_id_id = {userid} 
+					group by l.id,b.listing_id;""")			
+			cursor.execute(sSQL)		
+			#cursor.execute("select l.id 'id', l.title 'title', l.image_link, l.description, l.listing_date, l.startbid, max(b.bid_amount) 'bid_amount', count(b.listing_id) 'bid_count' from auctions_listing l left join auctions_listingbid b on l.id = b.listing_id group by l.id,b.listing_id;")		
 		listings = dictfetchall(cursor)  #Listing.objects.raw("select l.id 'id', l.title 'title', l.image_link, l.startbid, b.bid_amount 'bid_amount', b.bid_count 'bid_count' from auctions_listing l left join (select listing_id, max(bid_amount) 'bid_amount', count(listing_id) 'bid_count' from auctions_listingbid group by listing_id) b on l.id = b.listing_id;")
-		return render(request, "auctions/index.html", {"listings": listings})
+		return render(request, "auctions/index.html", {"listings": listings, "title": title, "viewtype":viewtype})
 	else:
 		return render(request, "auctions/login.html", {"message": "Login required."})
 
@@ -148,4 +169,15 @@ def comment(request, listingid):
 	else:
 		return viewlisting(request, listingid) 
 		
+@login_required
+def watchlist(request, listingid, remove=0):
+		listing = Listing.objects.get(id=listingid)
+		if remove > 0:
+			Watchlist.objects.filter(user_id=request.user, listing_id = listing).delete()
+		else:	
+			Watchlist.objects.create(user_id=request.user, listing_id = listing)
+		if remove == 1:
+			return index(request, 'watchlist') 	
+		else:
+			return index(request, 'active')	
 	

@@ -18,11 +18,14 @@
         </div>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                <a class="nav-link" href="{% url 'index' 'active' %}">Active Listings</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'newlisting' 'add' %}">Create Listing</a>
-            </li>            
+            </li>   
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'viewwatchlist' %}">Watchlist</a>
+            </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
