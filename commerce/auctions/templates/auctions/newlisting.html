@@ -1,30 +1,31 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{ formlabel }} Listing</h2>
+    <div align=center><h1>{{ formlabel }} Listing </h1></div>
 	<form action="{%url 'newlisting' formtype %}" method="post">
 		{% csrf_token %}
-		<div class="form-flex-container">
-			<div class="form-grid-container">
-				<div class="item1"><input type="text" label="Title" name="title" placeholder="Title" size ="50" required value='{{ title }}'></div>
-				<!-- <div class ="item4">{{ error }}</div> -->
-				<div class="item2"><textarea name="description" style="rows: 5" placeholder="Description" required>{{ scontent }}</textarea></div>
-				<div class="item3"><input type="text" label="Image" name="imageurl" placeholder="Image URL" value='{{ image }}'></div>
-				<div class="itemimage"><img src='{{ image }}' class='image'></div>
-				<select class="item4" name="category" id="">
-					{% for category in categories %}
-						{%if selectedcategory.id == category.id%}
-							<option value="{{ category.id }}" selected>{{ category.category_name }}</option>
-						{%else%}
-							<option value="{{ category.id }}">{{ category.category_name }}</option>
-						{%endif%}	
-					{% endfor %}
-				</select>	
-				<div class="item5"><input type="text" label="Starting Bid" name="startbid" placeholder="Starting Bid..." value='{{ startbid }}'></div>
-				<input type=hidden name='listingid' value='{{ listingid }}'>			
-				<div class="item5"><input type=button onclick="history.back();" value="Back"> <input type="submit" class="submit" value="Save"></div>
-			</div>	
-		</div>		
+		
+				<div class="grid-container-create">
+						<div class="grid-item viewitem1"><input type="text" label="Title" name="title" placeholder="Title" size ="50" required value='{{ title }}'  style="font-size: medium;"></div>
+						<!-- <div class ="item4">{{ error }}</div> -->
+						<div class="grid-item viewitem2"><textarea name="description" style="rows: 5" placeholder="Description" required>{{ scontent }}</textarea></div>
+						<div class="grid-item viewitem3"><input type="text"  style="font-size: small;" label="Image" name="imageurl" placeholder="Image URL" value='{{ image }}'></div>
+						<div class="itemimage"><img src='{{ image }}' class='image'></div>
+						<div class="grid-item viewitem4">
+							<label style="font-size: small">Category: </label> <select  name="category" id="" style="font-size: small;">
+								{% for category in categories %}
+									{%if selectedcategory.id == category.id%}
+										<option value="{{ category.id }}" selected>{{ category.category_name }}</option>
+									{%else%}
+										<option value="{{ category.id }}">{{ category.category_name }}</option>
+									{%endif%}	
+								{% endfor %}
+							</select>	
+						</div>
+						<div class="grid-item viewitem5"><input type="text" label="Starting Bid" name="startbid" placeholder="Starting Bid..." value='{{ startbid }}'></div>
+						<input type=hidden name='listingid' value='{{ listingid }}'>			
+						<div class="grid-item viewitem6"><input type=button class="btn" onclick="history.back();" value="Back"> <input type="submit" class="btn" value="Save"></div>
+				</div>		
 		
 	</form>
 {% endblock %}

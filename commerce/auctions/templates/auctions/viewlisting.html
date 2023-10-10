@@ -2,7 +2,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{ formlabel }} Listing</h2>
+    <div align=center><h1>{{ formlabel }} Listing</h1></div>
 	<form action="{%url 'bid' listingid=listing.id%}" method="post" id="form1">
 		{% csrf_token %}
 		<ul style="list-style-type:none"> 
@@ -19,12 +19,24 @@
 						</div>
 						<div class="grid-item viewitem4">{{ listing.description }}</div>
 						<div class="grid-item viewitem5">Created: {{ listing.listing_date }}</div>
-						<div class="grid-item viewitem6"><input type="text" name="txtBid" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+						{%if userauth %}
+							{% if listing.user_id_id != request.user.id %}
+								<div class="grid-item viewitem6"><input type="text" name="txtBid" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+							{% else %}
+								{% if watchlist %}
+									<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=3%}">Remove from Watchlist</a></div>
+								{%else%}
+									<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=4%}">Add to Watchlist</a></div>
+								{%endif%}
+								<div class="grid-item viewitem6"><button formaction="{%url 'close' listingid=listing.id %}"  class="btn" value="Close Listing">Close Listing</button></div>							
+							{% endif %}	
+						{%endif%}
 					</div>
 				</li>
 		</ul>
 		<input type=hidden name='listingid' value='{{ listingid }}'>			
 	</form>
+	
 	<hr>
 	<div class="grid-container">
 		<div class="grid-item viewitem4">
@@ -36,8 +48,11 @@
 					{{comment.comment}}<br/>
 					<hr>
 				{% endfor %}
-				<textarea name="comment" style="rows: 5" placeholder="Comment..." required></textarea>
-				<div class="item5"><input type=button onclick="history.back();" value="Back"> <input type="submit" class="submit" value="Post" form="form2"></div>
+				{% if userauth %}
+					<textarea name="comment" style="rows: 5" placeholder="Comment..." required></textarea>
+					<div class="item5"><input type="submit" class="btn" value="Post" form="form2"></div>
+				{%endif%}
+				<!--<div class="item5"><input type=button onclick="history.back();" value="Back"> <input type="submit" class="submit" value="Post" form="form2"></div>-->
 				<input type=hidden name='listingid' value='{{ listingid }}'>			
 			</form>
 		</div>
