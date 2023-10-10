@@ -1,8 +1,29 @@
+
+.header {
+	background-color: #4d90fe;
+	color: black;
+	 padding-left: 10px;
+	}
 body {
-    margin: 0;
-    padding: 10px;
+    /*margin: 150px;*/
+	margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding-left: 0px;
     font-size: 0.875rem;
     font-family: Arial,sans-serif;
+}
+.btn {
+	background-color: #4d90fe;
+	border: 1px solid #3079ed;
+	height: 30px;
+	min-width: 120px;
+	padding: 0 12px;
+	border-radius: 2px;
+	cursor: default;
+	font-size: 11px;
+	font-weight: bold;
+	color: white;
 }
 .flex-container {
   display: flex;
@@ -22,15 +43,25 @@ body {
 
 .grid-container {
 	display: grid;
-	grid-template-columns: 230px auto;	
+	grid-template-columns: 18% auto;	
 	gap: 10px;
 	padding: 10px;
 	border: 2px;
 }
+.grid-container-create {
+	display: grid;
+	grid-template-columns: 18% auto;	
+	gap: 10px;
+	padding: 0px;
+	border: 2px;
+	min-height: 0; 
+	min-width: 0;
+}
 .grid-item {
   text-align: left;
-  padding: 20px;
-  font-size: 30px;
+  padding: 10px;
+  overflow: hidden;  
+  min-width: 0;   
 }
 
 .item1 { /*grid-area: image flex:100%*/ grid-column:1; grid-row: 1/span 5;}
@@ -56,8 +87,8 @@ h1 {
 
 .activeimage {
 	width:100%;
-    max-width:200px;
-    max-height: 250px;
+    max-width:300px;
+    max-height: 350px;
 }
 textarea {
     height: 20vh;
@@ -66,15 +97,18 @@ textarea {
 a img {
     border: none;
 }
-
+.headerlink {
+	color: white;
+}
 a.section:link, a.section:visited {
-    color: var(--header-link-color);
+   color: var(--header-link-color);
     text-decoration: none;
 }
 
 a.section:focus, a.section:hover {
     text-decoration: underline;
 }
+
 p, ol, ul, dl {
     margin: .2em 0 .8em 0;
 }

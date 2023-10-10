@@ -48,5 +48,8 @@ class Watchlist(models.Model):
 	
 	class Meta:
 		constraints = [
-		UniqueConstraint('user_id', 'listing_id', name='WatchlistComposite'),
-	]
+		UniqueConstraint('user_id', 'listing_id', name='WatchlistComposite')]
+	
+	def __str__(self):
+		return f"{self.user_id} {self.listing_id}"	
+	

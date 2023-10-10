@@ -18,15 +18,17 @@
 							<label id="lblprice">Current Bid: </label> $ {{ listing.startbid|floatformat:2 }} 
 						{%endif %}	
 					</div>	
-					{% if viewtype == 'active' %}
-						{% if listing.watchlist == 'false' %}
-							<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id %}">Add to Watchlist</a></div>
+					{% if userauth %}
+						{% if viewtype == 'active' %}
+							{% if listing.watchlist == 'false' %}
+								<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id %}">Add to Watchlist</a></div>
+							{% else %}
+								<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=2%}">Remove from Watchlist</a></div>
+							{% endif %}	
 						{% else %}
-							<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=2%}">Remove from Watchlist</a></div>
+							<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=1%}">Remove from Watchlist</a></div>
 						{% endif %}	
-					{% else %}
-						<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=1%}">Remove from Watchlist</a></div>
-					{% endif %}	
+					{%endif%}	
 					<div class="grid-item item4">{{ listing.description }}</div>
 					<div class="grid-item item5">Created: {{ listing.listing_date }}</div>
 					<hr>
