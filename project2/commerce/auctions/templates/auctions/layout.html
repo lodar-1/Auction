@@ -25,8 +25,11 @@
 					<a class="nav-link headerlink" href="{% url 'newlisting' 'add' %}">Create Listing</a>
 				</li>   
 				<li class="nav-item">
-					<a class="nav-link headerlink" href="{% url 'viewwatchlist' %}">Watchlist</a>
+					<a class="nav-link headerlink" href="{% url 'viewwatchlist' %}">Watchlist ({{watchcnt}})</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link headerlink" href="{% url 'categories' %}">Categories</a>
+				</li>				
 				{% if user.is_authenticated %}
 					<li class="nav-item">
 						<a class="nav-link headerlink" href="{% url 'logout' %}">Log Out</a>

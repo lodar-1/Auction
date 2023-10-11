@@ -21,22 +21,29 @@
 					{% if userauth %}
 						{% if viewtype == 'active' %}
 							{% if listing.watchlist == 'false' %}
-								<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id %}">Add to Watchlist</a></div>
+								<div class="grid-item item3"><a class="link" href="{%url 'watchlist' listingid=listing.id %}">Add to Watchlist</a></div>
 							{% else %}
-								<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=2%}">Remove from Watchlist</a></div>
+								<div class="grid-item item3"><a class="link" href="{%url 'watchlist' listingid=listing.id remove=2%}">Remove from Watchlist</a></div>
 							{% endif %}	
 						{% else %}
-							<div class="grid-item item3"><a href="{%url 'watchlist' listingid=listing.id remove=1%}">Remove from Watchlist</a></div>
+							<div class="grid-item item3"><a class="link" href="{%url 'watchlist' listingid=listing.id remove=1%}">Remove from Watchlist</a></div>
 						{% endif %}	
 					{%endif%}	
 					<div class="grid-item item4">{{ listing.description }}</div>
+					{% if listing.active == False %}
+						{%if listing.bid_amount > 0 %} 
+							<div class="grid-item item4"><label class="lblclosed" >AUCTION CLOSED</label></div>	
+						{%else%}
+							<div class="grid-item item4"><label class="lblclosed" >ACTION CLOSED WITH NO WINNERS</label></div>	
+						{%endif%}	
+					{%endif%}	
 					<div class="grid-item item5">Created: {{ listing.listing_date }}</div>
 					<hr>
 				</div>
 			</li>
 			<hr>
 		{% empty %}
-			No lisings
+			No lisings 
 		{% endfor %}
 	</ul>
 		

@@ -1,0 +1,14 @@
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div align=center><h1>Categories </h1></div>
+    <ul style="list-style-type:none">
+		{% for category in categories %}
+
+			<li class="list"> 
+				<a class="nav-link" href="{%url 'categories' categoryid=category.id %}">{{category.category_name }} ({{category.count}})</a>			
+			</li>	
+		{% endfor %}		
+	</ul>	
+{% endblock %}

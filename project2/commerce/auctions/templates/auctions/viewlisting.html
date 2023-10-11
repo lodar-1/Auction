@@ -20,16 +20,23 @@
 						<div class="grid-item viewitem4">{{ listing.description }}</div>
 						<div class="grid-item viewitem5">Created: {{ listing.listing_date }}</div>
 						{%if userauth %}
-							{% if listing.user_id_id != request.user.id %}
-								<div class="grid-item viewitem6"><input type="text" name="txtBid" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
-							{% else %}
-								{% if watchlist %}
-									<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=3%}">Remove from Watchlist</a></div>
-								{%else%}
-									<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=4%}">Add to Watchlist</a></div>
-								{%endif%}
-								<div class="grid-item viewitem6"><button formaction="{%url 'close' listingid=listing.id %}"  class="btn" value="Close Listing">Close Listing</button></div>							
+							{% if listing.user_id_id != request.user.id and listing.active%}
+									<div class="grid-item viewitem6"><input type="number" name="txtBid" min="{{ minbid }}" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
 							{% endif %}	
+							{% if watchlist %}
+								<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=3%}">Remove from Watchlist</a></div>
+							{%else%}
+								<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=4%}">Add to Watchlist</a></div>
+							{%endif%}
+							{% if listing.active and listing.user_id_id == request.user.id%}
+								<div class="grid-item viewitem6"><button formaction="{%url 'close' listingid=listing.id %}"  class="btn" value="Close Listing">Close Listing</button></div>							
+							{%elif not listing.active%}
+								{% if request.user.id == lastbiduser.id %}
+									<div class="grid-item viewitem6 lblwin"><label>CONGRATULATIONS, YOU WON THE AUCTION!</label></div>							
+								{% else %}
+									<div class="grid-item viewitem6 lblclosed"><label>CLOSED</label></div>		
+								{% endif %}						
+							{%endif%}	
 						{%endif%}
 					</div>
 				</li>
