@@ -21,7 +21,11 @@
 						<div class="grid-item viewitem5">Created: {{ listing.listing_date }}</div>
 						{%if userauth %}
 							{% if listing.user_id_id != request.user.id and listing.active%}
-									<div class="grid-item viewitem6"><input type="number" name="txtBid" min="{{ minbid }}" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+									{% if request.user.id == lastbiduser.id %}
+										<div class="grid-item viewitem6 lblactive">You are the current highest bidder</div>
+									{%else%}
+										<div class="grid-item viewitem6"><input type="number" name="txtBid" min="{{ minbid }}" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+									{%endif%}	
 							{% endif %}	
 							{% if watchlist %}
 								<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=3%}">Remove from Watchlist</a></div>
