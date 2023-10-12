@@ -26,7 +26,7 @@ class Listing(models.Model):
 		return f"{self.title} {self.user_id} {self.listing_date}"
 		
 class ListingBid(models.Model):
-	bid_amount = models.IntegerField() 
+	bid_amount = models.FloatField() 
 	bid_datetime = models.DateTimeField()
 	user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="UserBid")
 	listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="ListingBid")
