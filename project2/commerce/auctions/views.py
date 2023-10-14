@@ -207,7 +207,6 @@ def viewlisting(request, listingid):
 			minbid = listing.startbid
 			
 		comments = Comment.objects.filter(listing_id = listing)
-		print(f"last bid: {lastbiduser} current user: {request.user.id}")
 		renderdict = {"listing": listing, "userauth":userauth, "watchlist": bwatchlist, "minbid": minbid, "listingbids": lastbid, "comments":comments, "bidscount":bidcount, "lastbiduser":lastbiduser}
 		renderdict['watchcnt'] = getwatchcount(request.user)
 		return render(request, "auctions/viewlisting.html", renderdict)

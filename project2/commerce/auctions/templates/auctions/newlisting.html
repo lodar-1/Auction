@@ -7,7 +7,6 @@
 		
 				<div class="grid-container-create">
 						<div class="grid-item viewitem1"><input type="text" label="Title" name="title" placeholder="Title" size ="50" required value='{{ title }}'  style="font-size: medium;"></div>
-						<!-- <div class ="item4">{{ error }}</div> -->
 						<div class="grid-item viewitem2"><textarea name="description" style="rows: 5" placeholder="Description" required>{{ scontent }}</textarea></div>
 						<div class="grid-item viewitem3"><input type="text"  style="font-size: small;" label="Image" name="imageurl" placeholder="Image URL" value='{{ image }}'></div>
 						<div class="itemimage"><img src='{{ image }}' class='image'></div>
@@ -22,7 +21,7 @@
 								{% endfor %}
 							</select>	
 						</div>
-						<div class="grid-item viewitem5"><input type="text" label="Starting Bid" name="startbid" placeholder="Starting Bid..." value='{{ startbid }}'></div>
+						<div class="grid-item viewitem5">$ <input type="number"  step="0.50" label="Starting Bid" name="startbid" placeholder="Starting Bid..." value='{{ startbid }}' numeric></div>
 						<input type=hidden name='listingid' value='{{ listingid }}'>			
 						<div class="grid-item viewitem6"><input type=button class="btn" onclick="history.back();" value="Back"> <input type="submit" class="btn" value="Save"></div>
 				</div>		
