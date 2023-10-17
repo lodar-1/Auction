@@ -1,0 +1,29 @@
+textarea {
+    min-height: 400px;
+}
+.colright {
+	text-align: right;
+}
+.emailrow  {
+border-width: 0px 1px 1px 1px; 
+border-style: solid;
+cursor: pointer;
+}
+.read {
+background:  lightgray;
+}
+.emailhead  {
+border-width: 1px 1px 1px 1px; 
+border-style: solid;
+}
+
+.h6 {
+	font-weight: 700;
+}
+
+.viewdiv {
+	font-weight: 700;
+}
+.viewfield {
+	font-weight: 400;
+}
