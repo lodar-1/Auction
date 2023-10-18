@@ -1,0 +1,71 @@
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div align=center><h1>{{ formlabel }} Listing</h1></div>
+	<form action="{%url 'bid' listingid=listing.id%}" method="post" id="form1">
+		{% csrf_token %}
+		<ul style="list-style-type:none"> 
+				<li class="list"> 
+					<div class="grid-container">
+						<div class="grid-item viewitem1" style="text-align: left"><a ><image class="activeimage" src='{{listing.image_link}}'></image></a></div>
+						<div class="grid-item viewitem2"><h2>{{ listing.title }}</h2></div>
+						<div class="grid-item viewitem3" >
+							{% if bidscount > 0 %}
+								<label id="lblprice">Current Bid: </label> $ {{ listingbids|floatformat:2 }} <font style="font-family: Arial, Helvetica, sans-serif;font-size: small;font-style: italic;">by {{lastbiduser}}</font> ({{bidscount}} total bid/s)
+							{% else %}
+								<label id="lblprice">Starting Bid: </label> $ {{ listing.startbid|floatformat:2 }}
+							{% endif %}	
+						</div>
+						<div class="grid-item viewitem4">{{ listing.description }}</div>
+						<div class="grid-item viewitem5">Created: {{ listing.listing_date }}</div>
+						{%if userauth %}
+							{% if listing.user_id_id != request.user.id and listing.active%}
+									{% if request.user.id == lastbiduser.id %}
+										<div class="grid-item viewitem6 lblactive">You are the current highest bidder</div>
+									{%else%}
+										<div class="grid-item viewitem6"><input type="number" name="txtBid" min="{{ minbid }}" placeholder="Enter bid amount...">&nbsp;<input type="submit" form="form1" class="submit" value="Place Bid"></div>
+									{%endif%}	
+							{% endif %}	
+							{% if watchlist %}
+								<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=3%}">Remove from Watchlist</a></div>
+							{%else%}
+								<div class="grid-item viewitem6"><a href="{%url 'watchlist' listingid=listing.id remove=4%}">Add to Watchlist</a></div>
+							{%endif%}
+							{% if listing.active and listing.user_id_id == request.user.id%}
+								<div class="grid-item viewitem6"><button formaction="{%url 'close' listingid=listing.id %}"  class="btn" value="Close Listing">Close Listing</button></div>							
+							{%elif not listing.active%}
+								{% if request.user.id == lastbiduser.id %}
+									<div class="grid-item viewitem6 lblwin"><label>CONGRATULATIONS, YOU WON THE AUCTION!</label></div>							
+								{% else %}
+									<div class="grid-item viewitem6 lblclosed"><label>CLOSED</label></div>		
+								{% endif %}						
+							{%endif%}	
+						{%endif%}
+					</div>
+				</li>
+		</ul>
+		<input type=hidden name='listingid' value='{{ listingid }}'>			
+	</form>
+	
+	<hr>
+	<div class="grid-container">
+		<div class="grid-item viewitem4">
+			<form action="{%url 'comment' listingid=listing.id %}" method="post" id="form2">
+				{% csrf_token %}
+				{% for comment in comments %}
+					<font style="font-family: Arial, Helvetica, sans-serif;font-size: small;font-style: italic;">{{comment.user_id}} on {{comment.comment_datetime}}</font>
+					<br/>
+					{{comment.comment}}<br/>
+					<hr>
+				{% endfor %}
+				{% if userauth %}
+					<textarea name="comment" style="rows: 5" placeholder="Comment..." required></textarea>
+					<div class="item5"><input type="submit" class="btn" value="Post" form="form2"></div>
+				{%endif%}
+				<input type=hidden name='listingid' value='{{ listingid }}'>			
+			</form>
+		</div>
+			
+	</div>
+{% endblock %}
